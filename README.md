@@ -27,7 +27,28 @@ H2: การใช้ Ridge Regression ร่วมกับ Polynomial Feature
 รายละเอียดชุดข้อมูล
 จำนวนแถวข้อมูล: 7,394
 จำนวนตัวแปรทั้งหมด: 15
-แหล่งที่มาของข้อมูล: สมมุติชุดข้อมูลยอดขายอีคอมเมิร์ซ
+แหล่งที่มาของข้อมูล: https://www.kaggle.com/datasets/adarsh0806/influencer-merchandise-sales/data
+
+
+Data Dictionary 
+| Attribute             | คำอธิบาย         | Data Type               | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
+|-----------------------|----------------------------|-------------------------|----------------------------------------------|
+| Order ID              | หมายเลขคำสั่งซื้อ         | Ordinal                 | 189440                                       |
+| Order Date            | วันที่มีการสั่งซื้อ        | Interval (Date)         | 20/07/2024                                   |
+| Product ID            | หมายเลขสินค้า             | Ordinal                 | BF1543, BF1544, BFXXXX                       |
+| Product Category      | หมวดหมู่สินค้า            | Nominal                 | Clothing, Ornaments, Others                  |
+| Buyer Gender          | เพศของผู้ซื้อ             | Nominal                 | Male, Female                                 |
+| Buyer Age             | อายุของผู้ซื้อ            | Ratio (Continuous)      | [18, 100]                                    |
+| Order Location        | สถานที่สั่งซื้อ           | Nominal                 | Las Vegas, Sydney                            |
+| International Shipping| จัดส่งระหว่างประเทศหรือไม่| Nominal (Binary)        | Yes / No                                     |
+| Sales Price           | ราคาสินค้า                | Ratio (Continuous)      | [0, ∞)                                       |
+| Shipping Charges      | ค่าจัดส่งสินค้า            | Ratio (Continuous)      | [0, ∞)                                       |
+| Sales per Unit        | ยอดขายต่อหน่วย            | Ratio (Continuous)      | [0, ∞)                                       |
+| Quantity              | จำนวนสินค้าที่ซื้อ         | Ratio (Discrete)        | [1, ∞)                                       |
+| Total Sales           | ยอดขายรวม                 | Ratio (Continuous)      | [0, ∞)                                       |
+| Rating                | คะแนนรีวิว                | Interval (Ordinal/Disc.)| 1–5                                          |
+| Review                | ข้อความรีวิวลูกค้า        | Nominal (Text)          | The product was delivered quickly.          |
+
 ตัวแปรเป้าหมาย (Target Variable)
 Total Sales
 ตัวแปรสำคัญที่ใช้วิเคราะห์
