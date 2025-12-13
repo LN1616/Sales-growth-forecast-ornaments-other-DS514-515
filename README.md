@@ -45,7 +45,7 @@
 - จำนวนตัวแปรทั้งหมด: 15  
 - แหล่งที่มาของข้อมูล: https://www.kaggle.com/datasets/adarsh0806/influencer-merchandise-sales/data  
 
-### Data Dictionary
+#### Data Dictionary
 
 | Attribute | คำอธิบาย | Data Type | ช่วงค่าที่ถูกต้อง / ตัวอย่าง |
 |---|---|---|---|
@@ -65,12 +65,17 @@
 | Rating | คะแนนรีวิว | Interval / Ordinal | 1–5 |
 | Review | รีวิวลูกค้า | Nominal (Text) | “The product was delivered quickly.” |
 
-### ตัวแปรเป้าหมาย (Target Variable)
+
+#### ตัวแปรเป้าหมาย (Target Variable)
 
 - Total Sales
 
-### ตัวแปรสำคัญที่ใช้วิเคราะห์ (Key Features)
+```python
+y = df["Total Sales"]
+```
 
+
+#### ตัวแปรสำคัญที่ใช้วิเคราะห์ (Key Features)
 - Buyer Age  
 - Buyer Gender  
 - Shipping Charges  
@@ -80,17 +85,115 @@
 - DayOfWeek, IsWeekend  
 - Quantity  
 
----
+
+```python
+feature_cols = [
+    "Buyer Age",
+    "Buyer Gender",
+    "Shipping Charges",
+    "Rating",
+    "Product Category",
+    "OrderMonth",
+    "Quarter",
+    "DayOfWeek",
+    "IsWeekend",
+    "Quantity"
+]
+X = df[feature_cols]
+```
 
 ## 5. ระเบียบวิธีวิจัย (Methodology)
 
-### 5.1 Data Cleaning
+### 5.1 Data Cleaning and Preparation
+- ตรวจสอบว่าคอลัมน์ที่จำเป็นสำหรับการสร้างโมเดลมีอยู่ครบ
+- แปลงค่าของตัวแปรเชิงตัวเลขทั้งหมดให้อยู่ในรูป numeric
+- ลบแถวข้อมูลที่มีค่า NaN หลังจากการแปลงข้อมูล
+- ตรวจสอบว่าข้อมูลไม่ว่างเปล่าหลังการทำความสะอาด
+- กำหนดตัวแปรอิสระ (X) และตัวแปรเป้าหมาย (y)
+- แบ่ง Train/Test Split
 
-- ไม่มี Missing Values  
-- ไม่มี Duplicate Records  
-- ตรวจสอบและปรับรูปแบบวันที่ (Date Format) ให้เป็นชนิด datetime  
+#### ตรวจสอบว่าคอลัมน์ที่จำเป็นมีครบหรือไม่
+```python
+    missing = [c for c in feature_cols + ["Total Sales"] if c not in df_cat.columns]
+    if missing:
+        raise ValueError(f"Missing columns for modelling: {missing}")
+```
+#### แปลงข้อมูลฟีเจอร์และ target ให้เป็นตัวเลข
+```python
+    for col in feature_cols + ["Total Sales"]:
+        df_cat[col] = pd.to_numeric(df_cat[col], errors="coerce")
+```
+#### ลบแถวที่มีค่า NaN ในฟีเจอร์หรือ target
+```python
+    df_cat = df_cat.dropna(subset=feature_cols + ["Total Sales"])
+    if df_cat.empty:
+        raise ValueError(f"All rows became NaN after numeric conversion for {category_name}")
+```
+#### กำหนดตัวแปรอิสระ (X) และตัวแปรเป้าหมาย (y)
+```python
+    X = df_cat[feature_cols]
+    y = df_cat["Total Sales"]
+```
+#### แบ่ง Train/Test Split
+```python
+ X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,random_state=42)
+```
 
-### 5.2 Exploratory Data Analysis (EDA)
+### 5.2 Feature Engineering
+
+- Age Grouping
+- แปลง Order Date เป็นตัวแปร Month และ Quarter  
+- สร้าง DayOfWeek และ IsWeekend เพื่อแทนพฤติกรรมการซื้อในวันธรรมดาและวันหยุด  #
+
+#### Age Grouping
+```python
+bins = [18, 25, 35, 45,200]
+labels = ["18-24", "25-34", "35-44","45+"]
+
+df["AgeGroup"] = pd.cut(
+    df["Buyer Age"],
+    bins=bins,
+    labels=labels,
+    right=False,        # เปลี่ยนเป็น [18,25), [25,35), [35,45)
+    include_lowest=True # ให้ 18 ตกอยู่ในกลุ่มแรกด้วย
+)
+```
+
+#### สร้าง feature จาก Order Date สำหรับใช้ใน EDA
+```python
+df["OrderMonth"] = df["Order Date"].dt.month
+df["DayOfWeek"]  = df["Order Date"].dt.dayofweek
+df["day_of_month"] = df["Order Date"].dt.day
+df["Quarter"] = df["Order Date"].dt.quarter
+df["week"] = df["Order Date"].dt.isocalendar().week.astype(int)
+df["week_start"] = df["Order Date"] - pd.to_timedelta(df["Order Date"].dt.weekday, unit="D")
+df["IsWeekend"]  = df["DayOfWeek"].isin([5, 6]).astype(int)
+```
+
+#### สร้าง Polynomial Features (degree = 2) และรวมกับ StandardScaler + Ridge Regression ใน Pipeline
+```python
+  pipe = Pipeline([
+        ("poly",   PolynomialFeatures(degree=degree, include_bias=False)),
+        ("scaler", StandardScaler()),
+        ("model",  Ridge())
+    ])
+```
+
+#### GridSearch หา alpha ที่ดีที่สุด
+```python
+    param_grid = {
+        "model__alpha": [0.1, 1, 5, 10, 20, 50]
+    }
+    gs = GridSearchCV(
+        pipe,
+        param_grid,
+        cv=5,
+        scoring="r2",
+        n_jobs=-1
+    )
+```
+    
+### 5.3 Exploratory Data Analysis (EDA)
 
 - วิเคราะห์การกระจายตัวของยอดขาย (Distribution of Total Sales)  
 - วิเคราะห์แนวโน้มตามเวลา (Time Series Trend)  
@@ -102,14 +205,8 @@
 ตรวจสอบ ข้อมูลการทำ EDA เพิ่มเติมได้ที่
 https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
 
-### 5.3 Feature Engineering
-
-- แปลง Order Date เป็นตัวแปร Month และ Quarter  
-- สร้าง DayOfWeek และ IsWeekend เพื่อแทนพฤติกรรมการซื้อในวันธรรมดาและวันหยุด  
-- สร้าง Polynomial Features (Degree = 2) เพื่อจับความสัมพันธ์แบบไม่เชิงเส้น (Nonlinear Relationship)  
 
 ### 5.4 Machine Learning Modeling
-
 - โมเดลที่ใช้: Ridge Regression ร่วมกับ Polynomial Features  
 - เหตุผลการเลือก:
   - Ridge Regression ช่วยลดปัญหา Multicollinearity ในตัวแปรอิสระ  
@@ -118,11 +215,52 @@ https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
   - R² (Coefficient of Determination)  
   - RMSE (Root Mean Squared Error)  
 
----
+#### Train Model
+```python
+    gs.fit(X_train, y_train)
+```
+
+#### ดึง best model
+```python
+    best_model = gs.best_estimator_
+```
+
+#### Train metrics
+```python
+    y_train_pred = best_model.predict(X_train)
+    train_r2   = r2_score(y_train, y_train_pred)
+    train_rmse = mean_squared_error(y_train, y_train_pred) ** 0.5
+```
+#### Test metrics
+```python
+    y_test_pred = best_model.predict(X_test)
+    test_r2   = r2_score(y_test, y_test_pred)
+    test_rmse = mean_squared_error(y_test, y_test_pred) ** 0.5
+```
+
+```python
+ print(f"===== Category (Poly degree={degree}): {category_name} =====")
+    print("Best parameters:", gs.best_params_)
+    print(f"Train R^2  : {train_r2:.4f}")
+    print(f"Train RMSE : {train_rmse:.4f}")
+    print(f"Test R^2   : {test_r2:.4f}")
+    print(f"Test RMSE  : {test_rmse:.4f}")
+
+    return gs, (X_train, X_test, y_train, y_test)
+```
+
 
 ## 6. ผลลัพธ์ของโมเดล (Model Performance)
+#### Model Evaluation
+```python
+# Ornaments (Polynomial)
+model_orn_poly, data_orn_poly = train_ridge_poly_for_category(df, "Ornaments", degree=2)
 
-### หมวด Ornaments
+# Other (Polynomial)
+model_oth_poly, data_oth_poly = train_ridge_poly_for_category(df, "Other", degree=2)
+```
+
+#### หมวด Ornaments
 
 | Metric | Score |
 |---|---:|
@@ -140,7 +278,7 @@ https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
 | Train RMSE | 39.6635 |
 | Test RMSE | 37.1657 |
 
----
+
 
 ## 7. ข้อค้นพบเชิงลึก (Findings & Insights)
 
