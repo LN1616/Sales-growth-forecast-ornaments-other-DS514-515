@@ -1,14 +1,16 @@
 # Sales Growth Forecast for Ornaments & Other Categories in 2026
-โครงการคาดการณ์ยอดขายและวิเคราะห์ปัจจัยที่มีผลต่อยอดขายของหมวด Ornaments และ Other เพื่อสนับสนุนการวางแผนเชิงกลยุทธ์ด้วยวิธีการทาง Data Analytics และ Predictive Modeling
+
+โครงการคาดการณ์ยอดขายและวิเคราะห์ปัจจัยที่มีผลต่อยอดขายของหมวด Ornaments และ Other เพื่อสนับสนุนการวางแผนเชิงกลยุทธ์ด้วยวิธีการทาง Data Analytics และ Predictive Modeling Using Ridge Regression with Polynimial Features
 
 ---
 
 ## 1. บทนำและความเป็นมา (Introduction & Background)
 
-ธุรกิจอีคอมเมิร์ซในปัจจุบันมีการแข่งขันสูงและต้องอาศัยข้อมูลเชิงลึกในการตัดสินใจ โดยเฉพาะในหมวดสินค้า Ornaments และ Other
-ซึ่งมีความผันผวนของยอดขายอันเนื่องมาจากฤดูกาล พฤติกรรมผู้บริโภค และปัจจัยด้านราคา
+ธุรกิจอีคอมเมิร์ซในปัจจุบันมีการแข่งขันสูงและต้องอาศัยข้อมูลเชิงลึกในการตัดสินใจ โดยเฉพาะในหมวดสินค้า Ornaments และ Other ซึ่งมีความผันผวนของยอดขายอันเนื่องมาจากฤดูกาล พฤติกรรมผู้บริโภค และปัจจัยด้านราคา
 
 แม้ยอดขายรวมจะอยู่ในระดับที่ดี แต่ยังพบความไม่เสถียรของกำไร ทำให้จำเป็นต้องพัฒนาโมเดลพยากรณ์ยอดขาย เพื่อใช้วางแผนด้านสต๊อก โปรโมชั่น และกลยุทธ์ราคาในปี 2026
+
+โดยมีเป้าหมายหลักคือ เพิ่มยอดขาย 5% จากยอดขายรวมปี 2025 ของหมวด Ornaments และ Other ภายใน Q4/2026 โดยอาศัยข้อมูลปี 2025 ในการปรับกลยุทธ์ target และ marketing campaign
 
 ---
 
@@ -45,23 +47,23 @@
 
 ### Data Dictionary
 
-| Attribute             | คำอธิบาย                        | Data Type               | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
-|-----------------------|----------------------------------|-------------------------|----------------------------------------------|
-| Order ID              | หมายเลขคำสั่งซื้อ               | Ordinal                 | 189440                                       |
-| Order Date            | วันที่มีการสั่งซื้อ              | Interval (Date)         | 20/07/2024                                   |
-| Product ID            | หมายเลขสินค้า                   | Ordinal                 | BF1543, BF1544, BFXXXX                       |
-| Product Category      | หมวดหมู่สินค้า                  | Nominal                 | Clothing, Ornaments, Others                  |
-| Buyer Gender          | เพศของผู้ซื้อ                   | Nominal                 | Male, Female                                 |
-| Buyer Age             | อายุผู้ซื้อ                     | Ratio (Continuous)      | 18–100                                       |
-| Order Location        | สถานที่สั่งซื้อ                 | Nominal                 | Las Vegas, Sydney                            |
-| International Shipping| จัดส่งระหว่างประเทศหรือไม่     | Nominal (Binary)        | Yes / No                                     |
-| Sales Price           | ราคาสินค้า                      | Ratio (Continuous)      | 0–∞                                          |
-| Shipping Charges      | ค่าจัดส่งสินค้า                 | Ratio (Continuous)      | 0–∞                                          |
-| Sales per Unit        | ยอดขายต่อหน่วย                  | Ratio (Continuous)      | 0–∞                                          |
-| Quantity              | จำนวนสินค้าที่ซื้อ               | Ratio (Discrete)        | 1–∞                                          |
-| Total Sales           | ยอดขายรวม                       | Ratio (Continuous)      | 0–∞                                          |
-| Rating                | คะแนนรีวิว                      | Interval / Ordinal      | 1–5                                          |
-| Review                | รีวิวลูกค้า                     | Nominal (Text)          | “The product was delivered quickly.”         |
+| Attribute | คำอธิบาย | Data Type | ช่วงค่าที่ถูกต้อง / ตัวอย่าง |
+|---|---|---|---|
+| Order ID | หมายเลขคำสั่งซื้อ | Ordinal | 189440 |
+| Order Date | วันที่มีการสั่งซื้อ | Interval (Date) | 20/07/2024 |
+| Product ID | หมายเลขสินค้า | Ordinal | BF1543, BF1544, BFXXXX |
+| Product Category | หมวดหมู่สินค้า | Nominal | Clothing, Ornaments, Others |
+| Buyer Gender | เพศของผู้ซื้อ | Nominal | Male, Female |
+| Buyer Age | อายุผู้ซื้อ | Ratio (Continuous) | 18–100 |
+| Order Location | สถานที่สั่งซื้อ | Nominal | Las Vegas, Sydney |
+| International Shipping | จัดส่งระหว่างประเทศหรือไม่ | Nominal (Binary) | Yes / No |
+| Sales Price | ราคาสินค้า | Ratio (Continuous) | 0–∞ |
+| Shipping Charges | ค่าจัดส่งสินค้า | Ratio (Continuous) | 0–∞ |
+| Sales per Unit | ยอดขายต่อหน่วย | Ratio (Continuous) | 0–∞ |
+| Quantity | จำนวนสินค้าที่ซื้อ | Ratio (Discrete) | 1–∞ |
+| Total Sales | ยอดขายรวม | Ratio (Continuous) | 0–∞ |
+| Rating | คะแนนรีวิว | Interval / Ordinal | 1–5 |
+| Review | รีวิวลูกค้า | Nominal (Text) | “The product was delivered quickly.” |
 
 ### ตัวแปรเป้าหมาย (Target Variable)
 
@@ -93,7 +95,12 @@
 - วิเคราะห์การกระจายตัวของยอดขาย (Distribution of Total Sales)  
 - วิเคราะห์แนวโน้มตามเวลา (Time Series Trend)  
 - ตรวจสอบความสัมพันธ์ด้วย Correlation Matrix  
-- วิเคราะห์พฤติกรรมผู้ซื้อแยกตาม Product Category  
+- วิเคราะห์ผู้ซื้อแยกตามประเทศ
+
+![Correlation Matrix](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornaments%20-%20Other%20Correlation%20Matrix.png)
+
+ตรวจสอบ ข้อมูลการทำ EDA เพิ่มเติมได้ที่
+https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
 
 ### 5.3 Feature Engineering
 
@@ -107,7 +114,6 @@
 - เหตุผลการเลือก:
   - Ridge Regression ช่วยลดปัญหา Multicollinearity ในตัวแปรอิสระ  
   - Polynomial Features ช่วยให้โมเดลสามารถจับความสัมพันธ์ที่ไม่เป็นเส้นตรงระหว่างตัวแปรกับยอดขายได้ดีขึ้น  
-
 - ตัวชี้วัดที่ใช้ประเมิน (Evaluation Metrics):
   - R² (Coefficient of Determination)  
   - RMSE (Root Mean Squared Error)  
@@ -118,53 +124,53 @@
 
 ### หมวด Ornaments
 
-| Metric    | Score   |
-|-----------|---------|
-| Train R²  | 0.3759  |
-| Test R²   | 0.3896  |
-| Train RMSE| 56.7367 |
+| Metric | Score |
+|---|---:|
+| Train R² | 0.3759 |
+| Test R² | 0.3896 |
+| Train RMSE | 56.7367 |
 | Test RMSE | 61.2070 |
 
 ### หมวด Other
 
-| Metric    | Score   |
-|-----------|---------|
-| Train R²  | 0.5610  |
-| Test R²   | 0.6046  |
-| Train RMSE| 39.6635 |
+| Metric | Score |
+|---|---:|
+| Train R² | 0.5610 |
+| Test R² | 0.6046 |
+| Train RMSE | 39.6635 |
 | Test RMSE | 37.1657 |
 
 ---
 
 ## 7. ข้อค้นพบเชิงลึก (Findings & Insights)
 
-จากการทดลองพัฒนาโมเดลหลายรูปแบบ ได้แก่ Linear Regression, Polynomial Regression และโมเดลแบบ Regularization เช่น Ridge Regression พบว่า **Ridge Regression ที่ผสานกับ Polynomial Features** ให้ผลลัพธ์ที่มีความสมดุลที่สุดระหว่าง **ความซับซ้อนของโมเดล (Model Complexity)** และ **ความสามารถในการอธิบายข้อมูล (Explanatory Power)** พร้อมทั้งคงไว้ซึ่งระดับ **generalization ที่ดี** เมื่อทดสอบกับข้อมูลที่โมเดลไม่เคยเห็นมาก่อน (Test Set)
-
-แม้ความแม่นยำโดยรวมจะยังไม่สูงมาก แต่โมเดลสามารถอธิบายแนวโน้มและความสัมพันธ์เชิงธุรกิจได้อย่างมีประสิทธิภาพ โดยเฉพาะในหมวด **Other** ซึ่งมีข้อมูลที่เสถียรกว่าและมีสัญญาณ (signal) ชัดเจนมากกว่าหมวด Ornaments
+โมเดลแสดงให้เห็นถึง generalization ที่ดี เนื่องจากค่า Train และ Test performance มีความใกล้เคียงกัน โดยค่า R² ของ Ornaments อยู่ที่ประมาณ 0.39 และ Other ประมาณ 0.60 แม้ค่า R² จะอยู่ในระดับปานกลาง แต่โมเดลสามารถอธิบาย ทิศทางและแนวโน้มเชิงธุรกิจ (forecast direction/trend) ได้อย่างเหมาะสม ทั้งนี้ ข้อมูลมีลักษณะ right-skew และมี outliers สูง ซึ่งจำกัดเพดานของค่า R² ส่งผลให้ผลการพยากรณ์ชี้ว่ายอดขายปี 2026 มีแนวโน้มทรงตัวถึงลดลงเล็กน้อย จึงจำเป็นต้องอาศัย กลยุทธ์ทางธุรกิจเพิ่มเติม เพื่อให้บรรลุเป้าหมายการเติบโต +5%
 
 ---
 
-### ประสิทธิภาพของโมเดลในแต่ละหมวดสินค้า
+### Ornaments
 
-#### หมวด Other — โมเดลมีความสามารถในการ Generalize ที่ดีกว่า
-- **Test R² = 0.6046**  
-  โมเดลสามารถอธิบายความแปรปรวนของยอดขายได้ประมาณ 60% ซึ่งถือว่าอยู่ในระดับปานกลางค่อนข้างดีสำหรับข้อมูลที่มีความผันผวนสูง
-- **RMSE = 37.17**  
-  ความคลาดเคลื่อนเฉลี่ยอยู่ในระดับที่ยอมรับได้สำหรับการประเมินแนวโน้มยอดขายในภาพรวม
+- Train R² = 0.3759  
+- Test R² = 0.3896  
+ยอดขายมีความผันผวนสูง ทำให้ความแม่นยำในการพยากรณ์ต่ำกว่า  
+- Train RMSE = 56.74  
+- Test RMSE = 61.21  
+สะท้อนว่าโมเดลมีความคลาดเคลื่อนในการทำนายค่อนข้างสูง สอดคล้องกับลักษณะยอดขายที่มีความผันผวน (high volatility)
 
-#### หมวด Ornaments — ข้อมูลมีความผันผวนสูง ทำให้โมเดลทำนายได้ยากกว่า
-- **R² = 0.3896**  
-  โมเดลอธิบายความแปรปรวนของยอดขายได้เพียงบางส่วน
-- **RMSE = 61.21**  
-  ค่าคลาดเคลื่อนสูง สะท้อนถึงรูปแบบยอดขายที่มีความไม่แน่นอนและยากต่อการพยากรณ์
+### Other
 
-จากผลลัพธ์นี้สามารถสรุปได้ว่าหมวด Ornaments มีความผันผวนสูงกว่าอย่างชัดเจน และอาจเหมาะกับโมเดลที่มีความซับซ้อนมากขึ้น เช่น Tree-Based Models (Random Forest, XGBoost) หรือ Time Series Models
+- Train R² = 0.5610  
+- Test R² = 0.6046  
+มีค่า R² สูงกว่า Ornaments แสดงถึงความสามารถในการ generalize ที่ดีกว่า  
+- Train RMSE = 39.66  
+- Test RMSE = 37.17  
+ค่า RMSE ต่ำกว่า Ornaments อย่างชัดเจน แสดงว่าโมเดลสามารถทำนายยอดขายของหมวด Other ได้แม่นยำกว่า
 
 ---
 
 ### ผลของการเพิ่ม Polynomial Features
 
-การเพิ่ม Polynomial Degree = 2 ทำให้โมเดลสามารถจับ **ความสัมพันธ์แบบไม่เชิงเส้น (non-linear patterns)** ได้ดีขึ้น เช่น
+การเพิ่ม Polynomial Degree = 2 ทำให้โมเดลสามารถจับ **ความสัมพันธ์แบบไม่เชิงเส้น (non-linear patterns)** ได้ดีขึ้น เช่น  
 - ค่าจัดส่งสูงเกิน threshold ทำให้ยอดขายลดลงทันที  
 - จำนวนสินค้าที่เพิ่มขึ้นส่งผลต่อยอดขายแบบโค้ง (diminishing returns)
 
@@ -185,33 +191,38 @@ Ridge Regression ช่วยให้โมเดล:
 - ลดความเสี่ยง overfitting  
 - เพิ่มความสามารถในการ generalize เมื่อพบข้อมูลใหม่  
 
-ด้วยเหตุผลนี้ Ridge Regression จึงเหมาะสำหรับการใช้เพื่อ **อธิบายปัจจัยที่มีผลต่อยอดขาย (Interpretive Modeling)** แม้จะยังไม่ใช่โมเดลที่แม่นยำที่สุดสำหรับการพยากรณ์ยอดขายเชิงตัวเลขก็ตาม
-
 ---
 
 ### สรุปภาพรวม
 
 โมเดล Ridge Regression with Polynomial Features ช่วยให้เข้าใจปัจจัยที่มีผลต่อยอดขายได้ดีในระดับหนึ่ง โดยเฉพาะในหมวด Other ที่มีรูปแบบข้อมูลเสถียรและสอดคล้องกับโมเดลมากกว่า แม้ผลการพยากรณ์เชิงปริมาณจะยังไม่สูง แต่โมเดลนี้มีประโยชน์ต่อการวิเคราะห์เชิงกลยุทธ์ และสามารถต่อยอดไปยังโมเดลที่ซับซ้อนขึ้นเพื่อเพิ่มความแม่นยำได้ในอนาคต
 
-
+![Scatter Plot](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornaments%20-%20Other%20Scatter%20plot%20-%20Actual%20vs%20Predicted.png)
 ---
 
 ## 8. ข้อเสนอเชิงกลยุทธ์ (Strategic Recommendations)
+![Forecast Ornaments](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornament-Total%20Sales%20-%20Actual%2C%20Forcast-%20Monthly%20Gap%20goal.png)
+![Forecast Other](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Other-Total%20Sales%20-%20Actual%2C%20Forcast-%20Monthly%20Gap%20goal.png)
+1. Forecast Indicates Natural Sales Decline in 2026  
+โมเดลคาดการณ์ว่ายอดขายหมวด Ornaments (-1.24%) และ Other (-0.30%) มีแนวโน้มทรงตัวถึงลดลง หากไม่มีกลยุทธ์เชิงรุกเพิ่มเติม
 
-### ด้านการตลาด (Marketing Strategy)
+2. +5% Growth Target Requires Proactive Monthly Uplift  
+การบรรลุเป้าหมาย +5% YoY จำเป็นต้องปิดช่องว่างรายเดือน  
+โดยเฉพาะหมวด Ornaments (+$810 ต่อเดือน) ที่ต้องเพิ่มยอดขายเฉลี่ยสูงกว่า Other (+$280 ต่อเดือน)
 
-- ทำ Targeted Campaign สำหรับลูกค้ากลุ่มอายุ 25–34 ปีที่เป็นกลุ่มกำลังซื้อหลัก  
-- ใช้โปรโมชั่นแบบ Bundle หรือ Multi-Buy เพื่อผลักดันหมวดสินค้าที่มียอดขายต่ำแต่มีศักยภาพเติบโต  
+3. Data-Driven Actions Needed to Close the Growth Gap  
+ผลการวิเคราะห์ชี้ว่า การเพิ่ม Quantity ผ่าน targeted campaigns และ market-specific strategies เป็นกลไกหลักในการขับเคลื่อนการเติบโต
 
-### ด้านบริหารสินค้า (Inventory Strategy)
+เนื่องจากผลการพยากรณ์จากโมเดลชี้ให้เห็นว่า ยอดขายหมวด Ornaments มีแนวโน้มลดลงประมาณ −1.24% และ หมวด Other ลดลงประมาณ −0.3% เมื่อเทียบกับปี 2025 เพื่อให้บรรลุ SMART Objective ที่กำหนดไว้ จึงจำเป็นต้องผลักดันการเติบโตเพิ่มเติม โดยคาดว่าต้องสร้าง uplift เพิ่มประมาณ +5.9% สำหรับหมวด Ornaments และ ประมาณ +5% สำหรับหมวด Other จากระดับที่โมเดลคาดการณ์ไว้ จาก EDA Insights สามารถกำหนดแนวทางเชิงกลยุทธ์เพื่อปิดช่องว่างจากเป้าหมายการเติบโตได้ดังนี้
 
-- เพิ่มสต๊อกสินค้าในรหัสที่มียอดซื้อซ้ำสูง เช่น BF1551, BF1544 (ตัวอย่าง)  
-- ลดสต๊อกสินค้าที่มี Demand ต่ำและความผันผวนสูง  
+### แนวทางการส่งเสริมการขายด้านการตลาด (Marketing Strategy)
 
-### ด้านธุรกิจระหว่างประเทศ (Regional Optimization)
+1. กลุ่มลูกค้าที่มีมูลค่าในการซื้อสูงที่สุดคือ เพศชายอายุ 25–34 ปีควรใช้ targeted campaigns, personalization และ bundle promotion (+2%)
 
-- ทำ Localized Promotion ตามลักษณะพฤติกรรมลูกค้าแต่ละประเทศ  
-- ใช้ข้อมูลยอดขายต่อภูมิภาคประกอบการวางแผนสต๊อกและการจัดส่ง  
+2. Quantity เป็นปัจจัยที่ส่งผลต่อยอดขายมากที่สุด จึงควรใช้กลยุทธ์ที่มุ่งเพิ่มจำนวนสินค้าที่ลูกค้าซื้อในแต่ละออเดอร์ เช่น Bundle Promotion, Multi-buy Offer และโปรโมชันแบบ “ซื้อ 2 ชิ้นลดเพิ่ม” เพื่อเร่งการเติบโตของยอดขาย (+2%)
+
+3. Targeted campaign for US Market  
+ใช้ Free Shipping Threshold สำหรับ US เพราะลูกค้ามักสั่งซื้อหลายชิ้น เพื่อ เพิ่ม basket size ทำ Localized Promotion เช่น “U.S. Limited Edition” (+2%)
 
 ---
 
@@ -228,5 +239,3 @@ Ridge Regression ช่วยให้โมเดล:
 
 - Pimwipa Leesongsak (68199160287)  
 - Poonyapa Sansupo (68199160283)
-
----
