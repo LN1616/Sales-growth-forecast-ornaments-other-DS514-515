@@ -202,7 +202,7 @@ df["IsWeekend"]  = df["DayOfWeek"].isin([5, 6]).astype(int)
 
 ![Correlation Matrix](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornaments%20-%20Other%20Correlation%20Matrix.png)
 
-ตรวจสอบ ข้อมูลการทำ EDA เพิ่มเติมได้ที่
+ตรวจสอบข้อมูลการทำ EDA เพิ่มเติมได้ที่
 https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
 
 
@@ -420,3 +420,8 @@ Ridge Regression ช่วยให้โมเดล:
 
 - Pimwipa Leesongsak (68199160287)  
 - Poonyapa Sansupo (68199160283)
+
+
+ตรวจสอบข้อมูลการทำ EDA เพิ่มเติมได้ที่
+https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
+
