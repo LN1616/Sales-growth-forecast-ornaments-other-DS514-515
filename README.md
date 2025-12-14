@@ -79,7 +79,6 @@ y = df["Total Sales"]
 - Product Category  
 - Order Date → Month, Quarter  
 - DayOfWeek, IsWeekend  
-- Quantity  
 
 
 ```python
@@ -93,7 +92,6 @@ feature_cols = [
     "Quarter",
     "DayOfWeek",
     "IsWeekend",
-    "Quantity"
 ]
 X = df[feature_cols]
 ```
