@@ -19,7 +19,7 @@
 - พัฒนาโมเดลพยากรณ์ยอดขายรายเดือนสำหรับปี 2026 ในหมวด Ornaments และ Other  
 - วิเคราะห์ตัวแปรทางธุรกิจที่ส่งผลต่อยอดขาย เช่น อายุผู้ซื้อ ค่าจัดส่ง จำนวนสินค้า และเรตติ้ง  
 - สร้างกรอบการวิเคราะห์เพื่อสนับสนุนการตัดสินใจด้านการตลาดและการบริหารสินค้าคงคลัง  
-- ประเมินประสิทธิภาพของโมเดลด้วยตัวชี้วัด R² และ RMSE เพื่อหาโมเดลที่เหมาะสมที่สุด  
+- ประเมินประสิทธิภาพของโมเดลด้วยตัวชี้วัด R², RMSE และ MAE เพื่อหาโมเดลที่เหมาะสมที่สุด  
 
 ---
 
@@ -219,7 +219,8 @@ https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
   - Polynomial Features ช่วยให้โมเดลสามารถจับความสัมพันธ์ที่ไม่เป็นเส้นตรงระหว่างตัวแปรกับยอดขายได้ดีขึ้น  
 - ตัวชี้วัดที่ใช้ประเมิน (Evaluation Metrics):
   - R² (Coefficient of Determination)  
-  - RMSE (Root Mean Squared Error)  
+  - RMSE (Root Mean Squared Error)
+  - MAE (Mean Squared Error)  
 
 #### Train Model
 ```python
@@ -236,12 +237,14 @@ https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
     y_train_pred = best_model.predict(X_train)
     train_r2   = r2_score(y_train, y_train_pred)
     train_rmse = mean_squared_error(y_train, y_train_pred) ** 0.5
+    train_mae = mean_absolute_error(y_train, y_train_pred)
 ```
 #### Test metrics
 ```python
     y_test_pred = best_model.predict(X_test)
     test_r2   = r2_score(y_test, y_test_pred)
     test_rmse = mean_squared_error(y_test, y_test_pred) ** 0.5
+    test_mae  = mean_absolute_error(y_test, y_test_pred)
 ```
 #### แสดงผลลัพธ์โมเดลและตัวชี้วัดประสิทธิภาพ (Training & Testing Metrics)
 ```python
@@ -249,8 +252,10 @@ https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
     print("Best parameters:", gs.best_params_)
     print(f"Train R^2  : {train_r2:.4f}")
     print(f"Train RMSE : {train_rmse:.4f}")
+    print(f"Train MAE  : {train_mae:.4f}")
     print(f"Test R^2   : {test_r2:.4f}")
     print(f"Test RMSE  : {test_rmse:.4f}")
+    print(f"Train MAE  : {train_mae:.4f}")
 
     return gs, (X_train, X_test, y_train, y_test)
 ```
@@ -274,11 +279,13 @@ model_oth_poly, data_oth_poly = train_ridge_poly_for_category(df, "Other", degre
 | Test R² | 0.3896 |
 | Train RMSE | 56.7367 |
 | Test RMSE | 61.2070 |
+| Train MAE | 37.1278 |
+| Test MAE   | 38.5765 |
 
 
 R² ยอดขายมีความผันผวนสูง ทำให้ความแม่นยำในการพยากรณ์ต่ำกว่า Other
 
-ค่า RMSE สะท้อนว่าโมเดลมีความคลาดเคลื่อนในการทำนายค่อนข้างสูง สอดคล้องกับลักษณะยอดขายที่มีความผันผวน (high volatility)
+ค่า RMSE, MAE สะท้อนว่าโมเดลมีความคลาดเคลื่อนในการทำนายค่อนข้างสูง สอดคล้องกับลักษณะยอดขายที่มีความผันผวน (high volatility)
 
 ### หมวด Other
 
@@ -288,10 +295,12 @@ R² ยอดขายมีความผันผวนสูง ทำให
 | Test R² | 0.6046 |
 | Train RMSE | 39.6635 |
 | Test RMSE | 37.1657 |
+| Train MAE | 23.4957 |
+| Test MAE   | 21.4010 |
 
 มีค่า R² สูงกว่า Ornaments แสดงถึงความสามารถในการ generalize ที่ดีกว่า  
 
-ค่า RMSE ต่ำกว่า Ornaments อย่างชัดเจน แสดงว่าโมเดลสามารถทำนายยอดขายของหมวด Other ได้แม่นยำกว่า
+ค่า RMSE, MAE ต่ำกว่า Ornaments อย่างชัดเจน แสดงว่าโมเดลสามารถทำนายยอดขายของหมวด Other ได้แม่นยำกว่า
 
 ## 7. ข้อค้นพบเชิงลึก (Findings & Insights)
 
