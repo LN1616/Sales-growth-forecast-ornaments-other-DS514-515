@@ -73,26 +73,23 @@ y = df["Total Sales"]
 
 #### ตัวแปรสำคัญที่ใช้วิเคราะห์ (Key Features)
 - Buyer Age  
-- Buyer Gender  
 - Shipping Charges  
 - Rating  
-- Product Category  
 - Order Date → Month, Quarter  
-- DayOfWeek, IsWeekend  
+- DayOfWeek
+- IsWeekend  
 
 
 ```python
-feature_cols = [
-    "Buyer Age",
-    "Buyer Gender",
-    "Shipping Charges",
-    "Rating",
-    "Product Category",
-    "OrderMonth",
-    "Quarter",
-    "DayOfWeek",
-    "IsWeekend",
-]
+ feature_cols = [
+        "Buyer Age",
+        "Shipping Charges",
+        "Rating",
+        "OrderMonth",
+        "Quarter",
+        "DayOfWeek",
+        "IsWeekend",
+    ]
 X = df[feature_cols]
 ```
 
