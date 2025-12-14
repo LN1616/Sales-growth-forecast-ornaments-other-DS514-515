@@ -92,6 +92,8 @@ y = df["Total Sales"]
     ]
 X = df[feature_cols]
 ```
+![Correlation Matrix](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornaments%20-%20Other%20Correlation%20Matrix%202.png)
+<p align="center"><strong>Figure 1. Correlation Matrix of Key Variables by Product Category (Ornaments vs Other)</strong></p>
 
 ## 5. ระเบียบวิธีวิจัย (Methodology)
 
@@ -195,9 +197,6 @@ df["IsWeekend"]  = df["DayOfWeek"].isin([5, 6]).astype(int)
 - วิเคราะห์แนวโน้มตามเวลา (Time Series Trend)  
 - ตรวจสอบความสัมพันธ์ด้วย Correlation Matrix  
 - วิเคราะห์ผู้ซื้อแยกตามประเทศ
-
-![Correlation Matrix](https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS514-515/blob/main/image/Ornaments%20-%20Other%20Correlation%20Matrix.png)
-<p align="center"><strong>Figure 1. Correlation Matrix of Key Variables by Product Category (Ornaments vs Other)</strong></p>
 
 ตรวจสอบข้อมูลการทำ EDA เพิ่มเติมได้ที่
 https://github.com/LN1616/Sales-growth-forecast-ornaments-other-DS512-513.git
